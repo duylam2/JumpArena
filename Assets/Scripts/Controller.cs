@@ -10,36 +10,40 @@ public class Controller : MonoBehaviour {
 	private Vector3 bounceVector;
 	private float move_horizontal;
 	private float move_vertical;
-
+	private Vector3 movement;
+	private Vector3 steering; 
 	public Rigidbody rb;
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody>();
 		speed = 30 * Time.deltaTime;
-		bounce = 200 * Time.deltaTime; 
-		bounceVector = Vector3.up * bounce;
-		move_horizontal = Input.GetAxis("Horizontal"); 
-		move_vertical = Input.GetAxis("Vertical");
+		bounce = 700 * Time.deltaTime; 
+		bounceVector = Vector3.zero;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		move_horizontal = Input.GetAxis("Horizontal") * speed; 
+		move_vertical = Input.GetAxis("Vertical") * speed;
+		// movement = new Vector3(move_vertical + transform.position.x, transform.position.y, move_horizontal + transform.position.z);
+		// if(move_horizontal != 0 || move_vertical != 0)
+		// 	transform.position = movement; 
+		if(move_horizontal != 0 || move_vertical != 0) {
+			transform.Rotate(new Vector3(0, move_horizontal, 0));
+		}
 		
 	}
 	void FixedUpdate() {
-		Vector3 movement = new Vector3(move_horizontal, 0.0f, move_vertical);
-		rb.AddForce(movement * speed, ForceMode.VelocityChange);
 	}
 
 	//Detect the ground
 	void OnCollisionEnter(Collision collision) {
 		if(collision.gameObject.name == "Plane") {
 			Bounce();
-			//Debug.Log("Bouncing");
 		} 
 	}
 
 	void Bounce() {
-		rb.AddForce(bounceVector, ForceMode.VelocityChange);
+		bounceVector = (Vector3.up) * bounce;
 	}
 }
