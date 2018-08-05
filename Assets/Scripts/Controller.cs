@@ -16,7 +16,7 @@ public class Controller : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody>();
-		speed = 30 * Time.deltaTime;
+		speed = 25 * Time.deltaTime;
 		bounce = 700 * Time.deltaTime; 
 		bounceVector = Vector3.zero;
 	}
@@ -25,12 +25,13 @@ public class Controller : MonoBehaviour {
 	void Update () {
 		move_horizontal = Input.GetAxis("Horizontal") * speed; 
 		move_vertical = Input.GetAxis("Vertical") * speed;
-		// movement = new Vector3(move_vertical + transform.position.x, transform.position.y, move_horizontal + transform.position.z);
-		// if(move_horizontal != 0 || move_vertical != 0)
-		// 	transform.position = movement; 
-		if(move_horizontal != 0 || move_vertical != 0) {
-			transform.Rotate(new Vector3(0, move_horizontal, 0));
-		}
+		//movement = new Vector3(move_vertical + transform.position.x, transform.position.y, move_horizontal + transform.position.z);
+		// if(move_horizontal != 0 || move_vertical != 0) {
+		//  	transform.position = movement; 
+		// 	transform.Rotate(new Vector3(0, move_horizontal, 0));
+		// }
+		movement = new Vector3(move_vertical, 0.0f, move_horizontal) * speed;
+		rb.AddForce(movement, ForceMode.VelocityChange);
 		
 	}
 	void FixedUpdate() {
@@ -45,5 +46,6 @@ public class Controller : MonoBehaviour {
 
 	void Bounce() {
 		bounceVector = (Vector3.up) * bounce;
+		rb.AddForce(bounceVector, ForceMode.Impulse);
 	}
 }
