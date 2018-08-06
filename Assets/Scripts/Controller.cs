@@ -11,18 +11,20 @@ public class Controller : MonoBehaviour {
 	private float move_horizontal;
 	private float move_vertical;
 	private Vector3 movement;
-	private Vector3 steering; 
 	public Rigidbody rb;
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody>();
-		speed = 25 * Time.deltaTime;
+		speed = 50 * Time.deltaTime;
 		bounce = 700 * Time.deltaTime; 
 		bounceVector = Vector3.zero;
+		rb.drag = 0.5f;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+	}
+	void FixedUpdate() {
 		move_horizontal = Input.GetAxis("Horizontal") * speed; 
 		move_vertical = Input.GetAxis("Vertical") * speed;
 		//movement = new Vector3(move_vertical + transform.position.x, transform.position.y, move_horizontal + transform.position.z);
@@ -30,11 +32,16 @@ public class Controller : MonoBehaviour {
 		//  	transform.position = movement; 
 		// 	transform.Rotate(new Vector3(0, move_horizontal, 0));
 		// }
-		movement = new Vector3(move_vertical, 0.0f, move_horizontal) * speed;
+		movement = new Vector3(move_vertical, 0.0f, move_horizontal);
+
 		rb.AddForce(movement, ForceMode.VelocityChange);
-		
-	}
-	void FixedUpdate() {
+
+		//Limit velocity
+
+		float velocityUp = rb.velocity.y;
+		movement = Vector3.ClampMagnitude(rb.velocity, 5f);
+		movement.y = velocityUp;
+		rb.velocity = movement;
 	}
 
 	//Detect the ground
@@ -45,6 +52,7 @@ public class Controller : MonoBehaviour {
 	}
 
 	void Bounce() {
+		//Default bounce
 		bounceVector = (Vector3.up) * bounce;
 		rb.AddForce(bounceVector, ForceMode.Impulse);
 	}
